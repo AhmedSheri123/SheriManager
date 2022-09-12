@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    input{
+        display: block;
+        border: 1px rgb(210, 210, 210) solid;
+        width: 300px;
+        margin: auto;
+    }
+    label {
+        margin-top: 15px;
+    }
+    .form-box{
+        text-align: center;
+        display: block;
+        margin: auto;
+        width: 400px;
+        border: 1px rgb(232, 232, 232) solid;
+        padding: 20px 10px;
+        box-shadow: rgb(215, 215, 215) 1px 2px 3px;
+        margin-top: 20px;
+        border-radius: 5px;
+        
+    }
+    select {
+        display: block;
+        width: 300px;
+        margin: auto;
+    }
+
+</style>
+<div class="container form-box" dir="rtl">
+
+{% for msg in messages %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+         {{msg}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+{% endfor %}
+
+
+    <h1>Sheri Net</h1>
+<form action="" method="post">
+    {% csrf_token %}
+    {{add_user_form}}
+    {{add_user_profile_form}}
+    <input type="submit" value="اضافة" class="btn btn-primary" style="margin-top: 15px;">
+</form>    
+</div>
+
+
+{% endblock content %}

@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+.links-bar{
+  display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+}
+</style>
+<br>
+
+<div class="container">
+    <div class="links-bar" dir="rtl">
+        <a href="{% url 'GetDate' %}" type="button" class="btn btn-outline-primary">هذا الشهر</a>
+        <form action="" method="post" style=" margin-right: 10px; width: 200px; margin: auto;">
+            {% csrf_token %}
+            <label for="date">اختر الشهر</label>
+            <input style="display: block;" required type="month" name="date" id="date" value="{{date_value}}" class="btn btn-outline-primary">
+            <input style="display: block; margin: auto; margin-top: 10px;" type="submit" class="btn btn-primary" value="بحث">
+        </form>
+        
+    </div>
+
+    
+    <h4 dir="rtl">الغير مدفوعة</h6>
+        <div class="bd-example-snippet bd-code-snippet"><div class="bd-example">
+            <table class="table table-striped" dir="rtl">
+              <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">الاسم</th>
+                <th scope="col">السرعة</th>
+                <th>
+                    ادفع
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+                {% for i in not_payed_obj %}
+              <tr>
+                <th scope="row">{{forloop.counter}}</th>
+                <td>{{i.username}}</td>
+                <td>{{i.userprofile.speed}}</td>
+                <td>
+
+                    <!-- Button trigger modal -->
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#yes{{i.username}}-{{i.id}}">
+                        ادفع
+                    </button>
+                    
+                    <!-- Modal -->
+                    <div class="modal fade" id="yes{{i.username}}-{{i.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel"></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{% url 'Pay' i.id %}" method="post">
+                                  {% csrf_token %}
+                                    <label for="comment"> تعليق</label>
+                                    <textarea style="display: block; width: 90%;" name="comment" id="comment" ></textarea>
+                                    <input type="hidden" name="date" value="{{date_value}}">
+                                    <input style="margin-top: 10px;" type="submit" class="btn btn-outline-success" value="ادفع">
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">الغاء</button>
+                            
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+
+                </td>
+              </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+            </div></div>
+
+
+<br>
+    <h4 dir="rtl">المدفوعة</h6>
+<div class="bd-example-snippet bd-code-snippet"><div class="bd-example">
+    <table class="table table-striped" dir="rtl">
+      <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">الاسم</th>
+            <th scope="col">السرعة</th>
+            <th scope="col">تعليق</th>
+            <th scope="col">تاريخ الدفع</th>
+            <th scope="col">حذف</th>
+          </tr>
+      </thead>
+      <tbody>
+        {% for i in payed_obj %}
+        <tr>
+          <th scope="row">{{forloop.counter}}</th>
+          <td>{{i.user.username}}</td>
+          <td>{{i.speed}}</td>
+          <td>{{i.comment}}</td>
+          <td>{{i.pay_date|date:"Y/m"}}</td>
+          <td>
+
+        <!-- Button trigger modal -->
+          <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#remove-{{i.id}}">
+            حذف
+          </button>
+
+          <!-- Modal -->
+          <div class="modal fade" id="remove-{{i.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel"></h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  هل انت متأكد
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">لا</button>
+                  <a href="{% url 'RemovePayment' i.id date_value %}" type="button" class="btn btn-danger">نعم</a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    </div></div>
+
+</div>
+
+{% endblock content %}
